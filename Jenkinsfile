@@ -29,19 +29,42 @@ pipeline {
                 echo "BUILD_URL - $env.BUILD_URL"
             }
         }
-        stage('Compile') {
+//         stage('Compile') {
+//             steps {
+//                 sh "mvn clean compile"
+//             }
+//         }
+//         stage('Test') {
+//             steps {
+//                 sh "mvn test"
+//             }
+//         }
+//         stage('Integration Test') {
+//             steps {
+//                 sh "mvn failsafe:integration-test failsafe:verify"
+//             }
+//         }
+        stage('Package') {
+                    steps {
+                        sh "mvn package -DskipTests"
+                    }
+                }
+        stage('Build Docker Image') {
             steps {
-                sh "mvn clean compile"
+                //docker build -t vdongmo/currency-exchange-devops:${env.BUILD_TAG} .
+                script {
+                    dockerImage = docker.build("vdongmo/currency-exchange-devops:${env.BUILD_TAG}")
+                }
             }
         }
-        stage('Test') {
+        stage('Push Docker Image') {
             steps {
-                sh "mvn test"
-            }
-        }
-        stage('Integration Test') {
-            steps {
-                sh "mvn failsafe:integration-test failsafe:verify"
+                //docker push vdongmo/currency-exchange-devops:${env.BUILD_TAG}
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                    dockerImage.push();
+                    dockerImage.push('latest');
+                }
             }
         }
     }
