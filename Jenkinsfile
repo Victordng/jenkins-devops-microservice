@@ -62,8 +62,9 @@ pipeline {
                 //docker push vdongmo/currency-exchange-devops:${env.BUILD_TAG}
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                    dockerImage.push();
-                    dockerImage.push('latest');
+                        dockerImage.push();
+                        dockerImage.push('latest');
+                    }
                 }
             }
         }
