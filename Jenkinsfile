@@ -45,10 +45,10 @@ pipeline {
 //             }
 //         }
         stage('Package') {
-                    steps {
-                        sh "mvn package -DskipTests"
-                    }
-                }
+            steps {
+                sh "mvn package -DskipTests"
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 //docker build -t vdongmo/currency-exchange-devops:${env.BUILD_TAG} .
